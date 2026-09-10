@@ -1,5 +1,4 @@
 import {
-  addDoc,
   collection,
   deleteDoc,
   doc,
@@ -84,6 +83,10 @@ function calculateEndDate(startDate, period) {
   return endDate;
 }
 
+function getActiveBudgetControlRef(userId) {
+  return doc(db, "users", userId, "budgetControl", "active");
+}
+
 export async function createBudget(userId, amount, period) {
   if (!userId) {
     throw new Error("USER_ID_REQUIRED");
@@ -93,7 +96,7 @@ export async function createBudget(userId, amount, period) {
 
   const budgetRef = doc(db, "users", userId, "budgets", `${Date.now()}`);
 
-  const activeBudgetRef = doc(db, "users", userId, "budgetControl", "active");
+  const activeBudgetRef = getActiveBudgetControlRef(userId);
 
   await runTransaction(db, async (transaction) => {
     const activeBudgetSnapshot = await transaction.get(activeBudgetRef);
@@ -274,6 +277,11 @@ export async function createNextRepeatingBudget(
       repeatEnabled: true,
       createdAt: serverTimestamp(),
     });
+
+    transaction.set(getActiveBudgetControlRef(userId), {
+      budgetId: nextBudgetRef.id,
+      updatedAt: serverTimestamp(),
+    });
   });
 
   return nextBudgetId;
@@ -391,6 +399,16 @@ export async function processRepeatingBudgets(userId) {
     });
 
     if (!latestBudget.repeatEnabled) {
+      const activeBudgetControlRef = getActiveBudgetControlRef(userId);
+      const activeBudgetControlSnapshot = await getDoc(activeBudgetControlRef);
+
+      if (
+        activeBudgetControlSnapshot.exists() &&
+        activeBudgetControlSnapshot.data().budgetId === budget.id
+      ) {
+        await deleteDoc(activeBudgetControlRef);
+      }
+
       continue;
     }
 
@@ -424,6 +442,16 @@ export async function processRepeatingBudgets(userId) {
         status: "completed",
         completedAt: serverTimestamp(),
       });
+
+      const activeBudgetControlRef = getActiveBudgetControlRef(userId);
+      const activeBudgetControlSnapshot = await getDoc(activeBudgetControlRef);
+
+      if (
+        activeBudgetControlSnapshot.exists() &&
+        activeBudgetControlSnapshot.data().budgetId === currentBudget.id
+      ) {
+        await deleteDoc(activeBudgetControlRef);
+      }
     }
   }
 }
@@ -536,94 +564,191 @@ export async function getBudget(userId, budgetId) {
 }
 
 export async function holdBudget(userId, budgetId) {
-  const budget = await getBudget(userId, budgetId);
+  const budgetRef = doc(db, "users", userId, "budgets", budgetId);
+  const activeBudgetControlRef = getActiveBudgetControlRef(userId);
 
-  if (!budget) {
-    throw new Error("BUDGET_NOT_FOUND");
-  }
+  await runTransaction(db, async (transaction) => {
+    const budgetSnapshot = await transaction.get(budgetRef);
 
-  if (budget.status === "completed") {
-    throw new Error("BUDGET_ALREADY_COMPLETED");
-  }
+    if (!budgetSnapshot.exists()) {
+      throw new Error("BUDGET_NOT_FOUND");
+    }
 
-  if (budget.status === "held") {
-    throw new Error("BUDGET_ALREADY_HELD");
-  }
+    const budget = budgetSnapshot.data();
 
-  await updateDoc(doc(db, "users", userId, "budgets", budgetId), {
-    status: "held",
-    heldAt: serverTimestamp(),
+    if (budget.status === "completed") {
+      throw new Error("BUDGET_ALREADY_COMPLETED");
+    }
+
+    if (budget.status === "held") {
+      throw new Error("BUDGET_ALREADY_HELD");
+    }
+
+    const activeBudgetControlSnapshot = await transaction.get(
+      activeBudgetControlRef,
+    );
+
+    transaction.update(budgetRef, {
+      status: "held",
+      heldAt: serverTimestamp(),
+    });
+
+    if (
+      activeBudgetControlSnapshot.exists() &&
+      activeBudgetControlSnapshot.data().budgetId === budgetId
+    ) {
+      transaction.delete(activeBudgetControlRef);
+    }
   });
 }
 
 export async function resumeBudget(userId, budgetId) {
-  const budget = await getBudget(userId, budgetId);
+  const budgetRef = doc(db, "users", userId, "budgets", budgetId);
+  const activeBudgetControlRef = getActiveBudgetControlRef(userId);
 
-  if (!budget) {
-    throw new Error("BUDGET_NOT_FOUND");
-  }
+  await runTransaction(db, async (transaction) => {
+    const budgetSnapshot = await transaction.get(budgetRef);
 
-  if (budget.status !== "held") {
-    throw new Error("BUDGET_NOT_HELD");
-  }
+    if (!budgetSnapshot.exists()) {
+      throw new Error("BUDGET_NOT_FOUND");
+    }
 
-  // *Automatically hold the currently running budget.*
-  const activeBudget = await getActiveBudget(userId);
+    const budget = {
+      id: budgetSnapshot.id,
+      ...budgetSnapshot.data(),
+    };
 
-  if (activeBudget && activeBudget.id !== budgetId) {
-    await updateDoc(doc(db, "users", userId, "budgets", activeBudget.id), {
-      status: "held",
-      heldAt: serverTimestamp(),
+    if (budget.status !== "held") {
+      throw new Error("BUDGET_NOT_HELD");
+    }
+
+    let startDate = budget.startDate?.toDate?.();
+    let endDate = budget.endDate?.toDate?.();
+
+    if (!startDate || !endDate) {
+      throw new Error("INVALID_BUDGET_DATES");
+    }
+
+    // Pause the budget countdown while it is held.
+    if (budget.heldAt?.toDate) {
+      const heldAt = budget.heldAt.toDate();
+
+      const pausedDuration = Date.now() - heldAt.getTime();
+
+      startDate = new Date(startDate.getTime() + pausedDuration);
+      endDate = new Date(endDate.getTime() + pausedDuration);
+    }
+
+    const activeBudgetControlSnapshot = await transaction.get(
+      activeBudgetControlRef,
+    );
+
+    if (activeBudgetControlSnapshot.exists()) {
+      const activeBudgetControl = activeBudgetControlSnapshot.data();
+
+      if (
+        activeBudgetControl.budgetId &&
+        activeBudgetControl.budgetId !== budgetId
+      ) {
+        const currentBudgetRef = doc(
+          db,
+          "users",
+          userId,
+          "budgets",
+          activeBudgetControl.budgetId,
+        );
+
+        const currentBudgetSnapshot = await transaction.get(currentBudgetRef);
+
+        if (currentBudgetSnapshot.exists()) {
+          const currentBudget = currentBudgetSnapshot.data();
+
+          if (currentBudget.status === "running") {
+            transaction.update(currentBudgetRef, {
+              status: "held",
+              heldAt: serverTimestamp(),
+            });
+          }
+        }
+      }
+    }
+
+    transaction.update(budgetRef, {
+      status: "running",
+      startDate,
+      endDate,
+      heldAt: null,
+      resumedAt: serverTimestamp(),
     });
-  }
 
-  let startDate = budget.startDate?.toDate?.();
-  let endDate = budget.endDate?.toDate?.();
-
-  if (!startDate || !endDate) {
-    throw new Error("INVALID_BUDGET_DATES");
-  }
-
-  // *Pause the budget countdown while it is held.*
-  if (budget.heldAt?.toDate) {
-    const heldAt = budget.heldAt.toDate();
-
-    const pausedDuration = Date.now() - heldAt.getTime();
-
-    startDate = new Date(startDate.getTime() + pausedDuration);
-    endDate = new Date(endDate.getTime() + pausedDuration);
-  }
-
-  await updateDoc(doc(db, "users", userId, "budgets", budgetId), {
-    status: "running",
-    startDate,
-    endDate,
-    heldAt: null,
-    resumedAt: serverTimestamp(),
+    transaction.set(activeBudgetControlRef, {
+      budgetId,
+      updatedAt: serverTimestamp(),
+    });
   });
 }
 
 export async function completeBudget(userId, budgetId) {
-  const budget = await getBudget(userId, budgetId);
-
-  if (!budget) {
-    throw new Error("BUDGET_NOT_FOUND");
-  }
-
-  if (budget.status === "completed") {
-    throw new Error("BUDGET_ALREADY_COMPLETED");
-  }
+  const budgetRef = doc(db, "users", userId, "budgets", budgetId);
+  const activeBudgetControlRef = getActiveBudgetControlRef(userId);
 
   const completedAt = new Date();
 
-  await updateDoc(doc(db, "users", userId, "budgets", budgetId), {
-    status: "completed",
-    completedAt: serverTimestamp(),
-  });
+  await runTransaction(db, async (transaction) => {
+    const budgetSnapshot = await transaction.get(budgetRef);
 
-  if (budget.repeatEnabled) {
-    await createNextRepeatingBudget(userId, budgetId, completedAt);
-  }
+    if (!budgetSnapshot.exists()) {
+      throw new Error("BUDGET_NOT_FOUND");
+    }
+
+    const budget = {
+      id: budgetSnapshot.id,
+      ...budgetSnapshot.data(),
+    };
+
+    if (budget.status === "completed") {
+      throw new Error("BUDGET_ALREADY_COMPLETED");
+    }
+
+    transaction.update(budgetRef, {
+      status: "completed",
+      completedAt: serverTimestamp(),
+    });
+
+    if (budget.repeatEnabled) {
+      if (!budget.startDate?.toDate || !budget.endDate?.toDate) {
+        throw new Error("INVALID_BUDGET_DATES");
+      }
+
+      const startDate = new Date(completedAt);
+      const endDate = calculateEndDate(startDate, budget.period);
+
+      const nextBudgetId = `${budgetId}_${startDate.getTime()}`;
+      const nextBudgetRef = doc(db, "users", userId, "budgets", nextBudgetId);
+
+      const nextBudgetSnapshot = await transaction.get(nextBudgetRef);
+
+      if (!nextBudgetSnapshot.exists()) {
+        transaction.set(nextBudgetRef, {
+          userId,
+          amount: Number(budget.amount),
+          period: budget.period,
+          startDate,
+          endDate,
+          status: "running",
+          repeatEnabled: true,
+          createdAt: serverTimestamp(),
+        });
+      }
+
+      transaction.set(activeBudgetControlRef, {
+        budgetId: nextBudgetId,
+        updatedAt: serverTimestamp(),
+      });
+    } else {
+      transaction.delete(activeBudgetControlRef);
+    }
+  });
 }
 
 async function deleteInBatches(documentRefs) {
@@ -689,6 +814,16 @@ export async function deleteBudget(userId, budgetId) {
 
   // *Delete the budget only after related data is removed.*
   await deleteDoc(budgetRef);
+
+  const activeBudgetControlRef = getActiveBudgetControlRef(userId);
+  const activeBudgetControlSnapshot = await getDoc(activeBudgetControlRef);
+
+  if (
+    activeBudgetControlSnapshot.exists() &&
+    activeBudgetControlSnapshot.data().budgetId === budgetId
+  ) {
+    await deleteDoc(activeBudgetControlRef);
+  }
 }
 
 export async function deleteAllBudgets(userId) {
@@ -743,6 +878,7 @@ export async function deleteAllBudgets(userId) {
 
   // *Delete all budgets last.*
   await deleteInBatches(budgetRefs);
+  await deleteDoc(getActiveBudgetControlRef(userId));
 }
 
 export async function getLatestFinishedBudget(userId) {

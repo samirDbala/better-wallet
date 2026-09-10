@@ -314,7 +314,7 @@ function Budgets() {
     }
 
     try {
-      setActionLoading(true);
+      setActionLoading("create");
 
       await holdBudget(user.uid, currentBudget.id);
 
@@ -323,7 +323,7 @@ function Budgets() {
     } catch (error) {
       console.error("Unable to hold current budget:", error);
     } finally {
-      setActionLoading(false);
+      setActionLoading("");
     }
   }
 
@@ -333,7 +333,7 @@ function Budgets() {
     }
 
     try {
-      setActionLoading(true);
+      setActionLoading("create");
 
       await deleteBudget(user.uid, currentBudget.id);
 
@@ -342,7 +342,7 @@ function Budgets() {
     } catch (error) {
       console.error("Unable to delete current budget:", error);
     } finally {
-      setActionLoading(false);
+      setActionLoading("");
     }
   }
 
