@@ -1,0 +1,1212 @@
+/* Profile page dark theme */
+
+body.dark-theme {
+  background: #191919;
+  color: #f5f5f5;
+}
+
+body.dark-theme .profile-page {
+  background: #191919;
+  color: #f5f5f5;
+}
+
+body.dark-theme .profile-avatar {
+  background: #2a2a2a;
+  color: #aaa;
+}
+
+body.dark-theme .profile-identity p,
+body.dark-theme .profile-link-row span,
+body.dark-theme .profile-danger-row span,
+body.dark-theme .profile-delete-row span {
+  color: #999;
+}
+
+body.dark-theme .profile-theme-row,
+body.dark-theme .profile-link-row,
+body.dark-theme .profile-danger-row,
+body.dark-theme .profile-delete-row {
+  border-color: #333;
+}
+
+body.dark-theme .profile-theme-toggle {
+  background: #2b2b2b;
+  color: #f5f5f5;
+}
+
+body.dark-theme .profile-theme-toggle-track {
+  background: #555;
+}
+
+body.dark-theme .profile-theme-toggle.active .profile-theme-toggle-track {
+  background: #555;
+}
+
+body.dark-theme .profile-theme-toggle.active .profile-theme-toggle-thumb {
+  background: #f5f5f5;
+  color: #111;
+}
+
+body.dark-theme .profile-logout-button {
+  background: #2b2b2b;
+  color: #f5f5f5;
+}
+
+body.dark-theme .profile-link-row svg {
+  color: #aaa;
+}
+
+body.dark-theme .profile-delete-button {
+  background: #4a2424;
+  color: #ff8b8b;
+}
+
+body.dark-theme .app-loading {
+  background: #191919;
+  color: #f5f5f5;
+}
+
+/* Home page dark theme */
+
+body.dark-theme .home {
+  background: #191919;
+  color: #f5f5f5;
+}
+
+body.dark-theme .home-menu-button,
+body.dark-theme .home-notification-button,
+body.dark-theme .home-profile-button,
+body.dark-theme .budget-period-button,
+body.dark-theme .view-expenses-button {
+  color: #f5f5f5;
+}
+
+body.dark-theme .home-profile-button {
+  background: #2a2a2a;
+}
+
+body.dark-theme .budget-card,
+body.dark-theme .analytics-tabs,
+body.dark-theme .analytics-card,
+body.dark-theme .expenses-section {
+  background: #242424;
+}
+
+body.dark-theme .budget-progress {
+  background: #444;
+}
+
+body.dark-theme .budget-progress-fill {
+  background: #f5f5f5;
+}
+
+body.dark-theme .add-expense-button {
+  background: #f5f5f5;
+  color: #111;
+}
+
+body.dark-theme .analytics-tab {
+  color: #999;
+}
+
+body.dark-theme .analytics-tab.active {
+  background: #f5f5f5;
+  color: #111;
+}
+
+body.dark-theme .chart-y-axis span,
+body.dark-theme .chart-x-axis span,
+body.dark-theme .category-y-axis span,
+body.dark-theme .category-name,
+body.dark-theme .category-pagination span {
+  color: #888;
+}
+
+body.dark-theme .chart-grid span {
+  background: #3a3a3a;
+}
+
+body.dark-theme .chart-fill {
+  fill: #3a3a3a;
+}
+
+body.dark-theme .chart-path {
+  stroke: #f5f5f5;
+}
+
+body.dark-theme .spending-chart-svg circle {
+  fill: #f5f5f5;
+}
+
+body.dark-theme .category-value {
+  color: #f5f5f5;
+}
+
+body.dark-theme .category-bar {
+  background: #f5f5f5;
+}
+
+body.dark-theme .expense-item {
+  border-color: #333;
+}
+
+body.dark-theme .expense-details span {
+  color: #888;
+}
+
+body.dark-theme .home-menu-overlay {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+body.dark-theme .home-menu-panel {
+  background: #202020;
+  box-shadow: 8px 0 24px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .home-menu-header {
+  border-color: #333;
+}
+
+body.dark-theme .home-menu-close,
+body.dark-theme .home-menu-navigation button {
+  color: #f5f5f5;
+}
+
+body.dark-theme .home-menu-navigation button:hover {
+  background: #2b2b2b;
+}
+
+body.dark-theme .category-pagination-button {
+  border-color: #444;
+  background: #2a2a2a;
+  color: #f5f5f5;
+}
+
+body.dark-theme .category-pagination-button:disabled {
+  opacity: 0.3;
+}
+
+body.dark-theme .saved-amount.warning {
+  color: #c7a84b;
+}
+
+body.dark-theme .saved-amount.negative {
+  color: #e06b63;
+}
+
+/* Add expense page dark theme */
+
+body.dark-theme .add-expense-overlay {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+body.dark-theme .add-expense-sheet {
+  background: #202020;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-theme .add-expense-close-button {
+  background: #2b2b2b;
+  color: #f5f5f5;
+}
+
+body.dark-theme .add-expense-close-button:hover {
+  background: #333;
+}
+
+body.dark-theme .add-expense-field input,
+body.dark-theme .add-expense-field select {
+  border-color: #383838;
+  background: #2a2a2a;
+  color: #f5f5f5;
+}
+
+body.dark-theme .add-expense-field input::placeholder {
+  color: #777;
+}
+
+body.dark-theme .add-expense-field input:focus,
+body.dark-theme .add-expense-field select:focus {
+  border-color: #555;
+  background: #303030;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.035);
+}
+
+body.dark-theme .add-expense-amount-wrapper > span {
+  color: #888;
+}
+
+body.dark-theme .add-expense-select-wrapper svg {
+  color: #999;
+}
+
+body.dark-theme .add-expense-error {
+  color: #999;
+}
+
+body.dark-theme .add-expense-submit {
+  background: #f5f5f5;
+  color: #111;
+}
+
+body.dark-theme .add-expense-loading {
+  color: #f5f5f5;
+}
+
+/* Expenses page dark theme */
+
+body.dark-theme .expenses-page {
+  background: #191919;
+  color: #f5f5f5;
+}
+
+body.dark-theme .expenses-back-button,
+body.dark-theme .expenses-header-menu,
+body.dark-theme .expenses-week-button {
+  color: #f5f5f5;
+}
+
+body.dark-theme .expenses-search-field input {
+  background: #2a2a2a;
+  color: #f5f5f5;
+  border-color: #333;
+}
+
+body.dark-theme .expenses-search-field input::placeholder {
+  color: #777;
+}
+
+body.dark-theme .expenses-search-field input:focus {
+  background: #2e2e2e;
+  border-color: #444;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.025);
+}
+
+body.dark-theme .expenses-search-clear {
+  background: #444;
+  color: #ddd;
+}
+
+body.dark-theme .expenses-search-clear:hover {
+  background: #4c4c4c;
+}
+
+body.dark-theme .expenses-search-button {
+  background: #f5f5f5;
+  color: #111;
+}
+
+body.dark-theme .expenses-control-button {
+  background: #2a2a2a;
+  color: #f5f5f5;
+}
+
+body.dark-theme .expenses-control-button:hover {
+  background: #333;
+}
+
+body.dark-theme .expense-row {
+  border-color: #333;
+}
+
+body.dark-theme .expense-category-icon {
+  background: #2a2a2a;
+  color: #ddd;
+}
+
+body.dark-theme .expense-row:hover .expense-category-icon {
+  background: #333;
+}
+
+body.dark-theme .expense-row-info span {
+  color: #888;
+}
+
+body.dark-theme .expense-row-menu {
+  color: #888;
+}
+
+body.dark-theme .expenses-empty {
+  color: #888;
+}
+
+body.dark-theme .expenses-empty strong {
+  color: #f5f5f5;
+}
+
+/* Expenses modals */
+
+body.dark-theme .expenses-modal-overlay {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+body.dark-theme .expenses-action-sheet {
+  background: #202020;
+  color: #f5f5f5;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-theme .expenses-modal-close {
+  background: #2c2c2c;
+  color: #f5f5f5;
+}
+
+body.dark-theme .expenses-modal-close:hover {
+  background: #353535;
+}
+
+body.dark-theme .expenses-action-sheet > button {
+  background: #2c2c2c;
+  color: #f5f5f5;
+}
+
+body.dark-theme .expenses-action-sheet > button:hover {
+  background: #353535;
+}
+
+body.dark-theme .expenses-action-sheet > button.active {
+  background: #3a3a3a;
+  color: #f5f5f5;
+}
+
+body.dark-theme .expenses-action-sheet > button.delete-action {
+  background: #3a3a3a;
+  color: #f5f5f5;
+}
+
+body.dark-theme .expenses-action-sheet > button.delete-action:hover {
+  background: #444;
+}
+
+body.dark-theme .expenses-action-sheet > button.cancel-action {
+  border-color: #3a3a3a;
+  background: transparent;
+  color: #f5f5f5;
+}
+
+body.dark-theme .expenses-action-sheet > button.cancel-action:hover {
+  background: #2c2c2c;
+}
+
+body.dark-theme .selected-expense span {
+  color: #f5f5f5;
+}
+
+body.dark-theme .clear-all-expenses-action {
+  background: #2c2c2c !important;
+  color: #f5f5f5 !important;
+}
+
+body.dark-theme .clear-all-confirm-action {
+  background: #4a2424 !important;
+  color: #ff8b8b !important;
+}
+
+body.dark-theme .clear-all-confirm-action:hover {
+  background: #572b2b !important;
+}
+
+body.dark-theme .clear-all-expenses-warning {
+  color: #888;
+}
+
+/* Edit expense page dark theme */
+
+body.dark-theme .edit-expense-overlay {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+body.dark-theme .edit-expense-sheet {
+  background: #202020;
+  color: #f5f5f5;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-theme .edit-expense-close-button {
+  background: #2b2b2b;
+  color: #f5f5f5;
+}
+
+body.dark-theme .edit-expense-close-button:hover {
+  background: #333;
+}
+
+body.dark-theme .edit-expense-field input,
+body.dark-theme .edit-expense-field select {
+  border-color: #383838;
+  background: #2a2a2a;
+  color: #f5f5f5;
+}
+
+body.dark-theme .edit-expense-field input::placeholder {
+  color: #777;
+}
+
+body.dark-theme .edit-expense-field input:focus,
+body.dark-theme .edit-expense-field select:focus {
+  border-color: #555;
+  background: #303030;
+}
+
+body.dark-theme .edit-expense-amount-wrapper > span {
+  color: #888;
+}
+
+body.dark-theme .edit-expense-select-wrapper svg {
+  color: #999;
+}
+
+body.dark-theme .edit-expense-error {
+  color: #999;
+}
+
+body.dark-theme .edit-expense-submit {
+  background: #f5f5f5;
+  color: #111;
+}
+
+body.dark-theme .edit-expense-error-message span {
+  color: #888;
+}
+
+/* Budgets page dark theme */
+
+body.dark-theme .budgets-page {
+  background: #191919;
+  color: #f5f5f5;
+}
+
+body.dark-theme .budgets-back-button,
+body.dark-theme .budgets-header-menu {
+  color: #f5f5f5;
+}
+
+body.dark-theme .budgets-add-button {
+  background: #2a2a2a;
+  color: #f5f5f5;
+}
+
+body.dark-theme .budgets-add-button:hover {
+  background: #333;
+}
+
+/* Current budget */
+
+body.dark-theme .current-budget-card,
+body.dark-theme .budgets-empty-card,
+body.dark-theme .budgets-loading {
+  background: #2a2a2a;
+}
+
+body.dark-theme .current-budget-card:hover {
+  background: #303030;
+}
+
+body.dark-theme .budget-period,
+body.dark-theme .budget-date-row,
+body.dark-theme .budget-view-details,
+body.dark-theme .budgets-empty-card span {
+  color: #888;
+}
+
+body.dark-theme .budget-status {
+  background: #f5f5f5;
+  color: #111;
+}
+
+body.dark-theme .budget-view-details {
+  border-color: #3a3a3a;
+}
+
+body.dark-theme .current-budget-menu {
+  background: #333;
+  color: #f5f5f5;
+}
+
+body.dark-theme .current-budget-menu:hover {
+  background: #3b3b3b;
+}
+
+body.dark-theme .budgets-empty-card button {
+  background: #f5f5f5;
+  color: #111;
+}
+
+/* Budget lists */
+
+body.dark-theme .completed-budget-row {
+  border-color: #333;
+}
+
+body.dark-theme .completed-budget-main {
+  color: #f5f5f5;
+}
+
+body.dark-theme .completed-budget-main span,
+body.dark-theme .completed-budget-main svg {
+  color: #888;
+}
+
+body.dark-theme .completed-budget-menu {
+  color: #888;
+}
+
+body.dark-theme .completed-budget-menu:hover {
+  color: #f5f5f5;
+}
+
+body.dark-theme .completed-empty {
+  color: #888;
+}
+
+body.dark-theme .budgets-loading-list div {
+  border-color: #333;
+}
+
+/* Budget modals */
+
+body.dark-theme .budgets-modal-overlay {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+body.dark-theme .budgets-action-sheet {
+  background: #202020;
+  color: #f5f5f5;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-theme .budgets-modal-close {
+  background: #2b2b2b;
+  color: #f5f5f5;
+}
+
+body.dark-theme .budgets-modal-close:hover {
+  background: #333;
+}
+
+body.dark-theme .selected-budget div span,
+body.dark-theme .selected-budget > span {
+  color: #888;
+}
+
+body.dark-theme .budget-create-choice p {
+  color: #888;
+}
+
+/* Budget action buttons */
+
+body.dark-theme .budget-sheet-action {
+  border-color: #3a3a3a;
+  background: #2c2c2c;
+  color: #f5f5f5;
+}
+
+body.dark-theme .budget-sheet-action:hover {
+  background: #353535;
+}
+
+body.dark-theme .budget-delete-action {
+  background: #2c2c2c;
+  color: #f5f5f5;
+}
+
+body.dark-theme .budget-delete-action:hover {
+  background: #353535;
+}
+
+body.dark-theme .budget-cancel-action {
+  border-color: #3a3a3a;
+  background: transparent;
+  color: #f5f5f5;
+}
+
+body.dark-theme .budget-cancel-action:hover {
+  background: #2c2c2c;
+}
+
+/* Budget details page dark theme */
+
+body.dark-theme .budget-details-page {
+  background: #191919;
+  color: #f5f5f5;
+}
+
+body.dark-theme .budget-details-back-button,
+body.dark-theme .budget-details-menu-button {
+  color: #f5f5f5;
+}
+
+/* Budget summary */
+
+body.dark-theme .budget-details-summary,
+body.dark-theme .budget-details-overview,
+body.dark-theme .budget-details-date-row,
+body.dark-theme .budget-details-category-list,
+body.dark-theme .budget-details-expense-list,
+body.dark-theme .budget-details-no-data {
+  background: #242424;
+  border-color: #333;
+}
+
+body.dark-theme .budget-details-period,
+body.dark-theme .budget-details-progress-labels,
+body.dark-theme .budget-details-overview-item span,
+body.dark-theme .budget-details-date-row span,
+body.dark-theme .budget-details-expense-info span {
+  color: #888;
+}
+
+body.dark-theme .budget-details-status {
+  background: #333;
+  color: #ddd;
+}
+
+body.dark-theme .budget-details-progress {
+  background: #3a3a3a;
+}
+
+body.dark-theme .budget-details-progress-fill {
+  background: #f5f5f5;
+}
+
+body.dark-theme .budget-details-overview-divider {
+  background: #3a3a3a;
+}
+
+/* Budget period */
+
+body.dark-theme .budget-details-date-row > svg:first-child {
+  color: #aaa;
+}
+
+body.dark-theme .budget-details-date-arrow {
+  color: #777;
+}
+
+/* Category spending */
+
+body.dark-theme .budget-details-section-heading > span {
+  background: #333;
+  color: #aaa;
+}
+
+body.dark-theme .budget-details-category-row + .budget-details-category-row,
+body.dark-theme .budget-details-expense-row + .budget-details-expense-row {
+  border-color: #333;
+}
+
+body.dark-theme .budget-details-category-icon,
+body.dark-theme .budget-details-expense-icon {
+  background: #333;
+  color: #ddd;
+}
+
+body.dark-theme .budget-details-category-name span {
+  color: #aaa;
+}
+
+body.dark-theme .budget-details-category-bar {
+  background: #3a3a3a;
+}
+
+body.dark-theme .budget-details-category-bar div {
+  background: #f5f5f5;
+}
+
+body.dark-theme .budget-details-no-data {
+  color: #888;
+}
+
+/* Expenses */
+
+body.dark-theme .budget-details-expense-info strong {
+  color: #f5f5f5;
+}
+
+body.dark-theme .budget-details-expense-amount {
+  color: #ddd;
+}
+
+/* Budget actions */
+
+body.dark-theme .budget-details-action-overlay {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+body.dark-theme .budget-details-action-sheet {
+  background: #202020;
+  color: #f5f5f5;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-theme .budget-details-modal-close {
+  background: #2b2b2b;
+  color: #f5f5f5;
+}
+
+body.dark-theme .budget-details-modal-close:hover {
+  background: #333;
+}
+
+body.dark-theme .budget-details-action-sheet > button {
+  background: #2c2c2c;
+  color: #f5f5f5;
+}
+
+body.dark-theme .budget-details-action-sheet > button:hover {
+  background: #353535;
+}
+
+body.dark-theme
+  .budget-details-action-sheet
+  > button.budget-details-delete-action {
+  background: #3a3a3a;
+  color: #f5f5f5;
+}
+
+body.dark-theme
+  .budget-details-action-sheet
+  > button.budget-details-delete-action:hover {
+  background: #444;
+}
+
+body.dark-theme
+  .budget-details-action-sheet
+  > button.budget-details-cancel-action {
+  border-color: #3a3a3a;
+  background: transparent;
+  color: #f5f5f5;
+}
+
+body.dark-theme
+  .budget-details-action-sheet
+  > button.budget-details-cancel-action:hover {
+  background: #2c2c2c;
+}
+
+/* Delete confirmation */
+
+body.dark-theme .budget-details-delete-confirmation p {
+  color: #888;
+}
+
+body.dark-theme .budget-details-delete-confirm-action {
+  background: #4a2424;
+  color: #ff8b8b;
+}
+
+body.dark-theme .budget-details-delete-confirm-action:hover {
+  background: #572b2b;
+}
+
+body.dark-theme .budget-details-cancel-action {
+  color: #aaa;
+}
+
+body.dark-theme .budget-details-empty p,
+body.dark-theme .budget-details-loading {
+  color: #888;
+}
+
+body.dark-theme .budget-details-primary-button {
+  background: #f5f5f5;
+  color: #111;
+}
+
+/* Notifications page dark theme */
+
+body.dark-theme .notifications-page,
+body.dark-theme .notifications-screen {
+  background: #191919;
+  color: #f5f5f5;
+}
+
+body.dark-theme .notifications-header {
+  border-color: #333;
+}
+
+body.dark-theme .notifications-title svg,
+body.dark-theme .notifications-close {
+  color: #f5f5f5;
+}
+
+body.dark-theme .notification-card,
+body.dark-theme .notification-empty-card {
+  background: #242424;
+  border-color: #333;
+}
+
+body.dark-theme .notification-card.unread {
+  border-color: #3a3a3a;
+}
+
+body.dark-theme .notification-card-content strong,
+body.dark-theme .notification-empty-card strong {
+  color: #f5f5f5;
+}
+
+body.dark-theme .notification-card-content span,
+body.dark-theme .notification-empty-card span {
+  color: #888;
+}
+
+body.dark-theme .notification-expense-name {
+  color: #f5f5f5 !important;
+}
+
+body.dark-theme .notification-time {
+  color: #777;
+}
+
+body.dark-theme .notification-date {
+  color: #777;
+}
+
+/* Notification swipe delete state */
+
+body.dark-theme .notification-swipe-wrapper {
+  background: #4a2424;
+}
+
+body.dark-theme .notification-delete-background {
+  background: #4a2424;
+  color: #ff8b8b;
+}
+
+body.dark-theme .notification-swipe-wrapper.swipe-ready .notification-card {
+  border-color: #684040;
+}
+
+/* Authentication pages dark theme */
+
+body.dark-theme .auth-page {
+  background: #191919;
+  color: #f5f5f5;
+}
+
+body.dark-theme .auth-back-button {
+  color: #f5f5f5;
+}
+
+body.dark-theme .auth-back-button:hover {
+  background: #2b2b2b;
+}
+
+body.dark-theme .auth-eyebrow {
+  color: #999;
+}
+
+body.dark-theme .auth-content h1 {
+  color: #f5f5f5;
+}
+
+body.dark-theme .auth-description {
+  color: #999;
+}
+
+body.dark-theme .auth-form label {
+  color: #aaa;
+}
+
+body.dark-theme .auth-form input {
+  border-color: #383838;
+  background: #2a2a2a;
+  color: #f5f5f5;
+}
+
+body.dark-theme .auth-form input::placeholder {
+  color: #777;
+}
+
+body.dark-theme .auth-form input:focus {
+  border-color: #f5f5f5;
+  box-shadow: 0 0 0 1px #f5f5f5;
+}
+
+body.dark-theme .auth-password-toggle {
+  color: #999;
+}
+
+body.dark-theme .auth-password-toggle:hover {
+  color: #f5f5f5;
+}
+
+body.dark-theme .auth-forgot-button {
+  color: #f5f5f5;
+}
+
+body.dark-theme .auth-primary-button {
+  background: #f5f5f5;
+  color: #111;
+}
+
+body.dark-theme .auth-divider span {
+  background: #3a3a3a;
+}
+
+body.dark-theme .auth-divider p {
+  color: #888;
+}
+
+body.dark-theme .auth-social-button {
+  background: #2a2a2a;
+  color: #f5f5f5;
+}
+
+body.dark-theme .auth-social-button:hover {
+  background: #333;
+}
+
+body.dark-theme .auth-password-mismatch,
+body.dark-theme .auth-error {
+  color: #ff8b8b;
+}
+
+body.dark-theme .auth-success {
+  color: #6fcf97;
+}
+
+body.dark-theme .auth-switch {
+  color: #999;
+}
+
+body.dark-theme .auth-switch button {
+  color: #f5f5f5;
+}
+
+body.dark-theme .password-rules span {
+  color: #777;
+}
+
+body.dark-theme .password-rules span.valid {
+  color: #6fcf97;
+}
+
+/* Onboarding page dark theme */
+
+body.dark-theme .onboarding {
+  background: #191919;
+  color: #f5f5f5;
+}
+
+body.dark-theme .onboarding h1,
+body.dark-theme .onboarding-text {
+  color: #f5f5f5;
+}
+
+body.dark-theme .onboarding-button {
+  background: #f5f5f5;
+  color: #111111;
+}
+
+body.dark-theme .onboarding-account-button {
+  background: #2a2a2a;
+  color: #f5f5f5;
+}
+
+/* Budget setup page dark theme */
+
+body.dark-theme .budget-setup-page {
+  background: #191919;
+}
+
+body.dark-theme .budget-setup-form {
+  background: #191919;
+  border-color: #333;
+}
+
+body.dark-theme .budget-setup-form h1,
+body.dark-theme .budget-setup-form label {
+  color: #f5f5f5;
+}
+
+body.dark-theme .budget-setup-logout {
+  background: #2a2a2a;
+  color: #f5f5f5;
+}
+
+body.dark-theme .budget-setup-logout:hover {
+  background: #333;
+}
+
+body.dark-theme .budget-setup-form select,
+body.dark-theme .budget-setup-form input {
+  background: #2a2a2a;
+  color: #f5f5f5;
+}
+
+body.dark-theme .budget-setup-form select:hover,
+body.dark-theme .budget-setup-form select:focus,
+body.dark-theme .budget-setup-form input:hover,
+body.dark-theme .budget-setup-form input:focus {
+  background: #303030;
+}
+
+body.dark-theme .budget-setup-form input::placeholder {
+  color: #777;
+}
+
+body.dark-theme .budget-create-button {
+  background: #f5f5f5;
+  color: #111;
+}
+
+body.dark-theme .budget-error {
+  color: #ff8b8b;
+}
+
+/* Budget setup modal dark theme */
+
+body.dark-theme .budget-setup-modal-overlay {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+body.dark-theme .budget-setup-modal {
+  background: #202020;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-theme .budget-setup-close {
+  background: #2b2b2b;
+  color: #f5f5f5;
+}
+
+body.dark-theme .budget-setup-close:hover {
+  background: #333;
+}
+
+body.dark-theme .budget-setup-modal-form {
+  background: transparent;
+}
+
+/* Reauthenticate page */
+
+.dark-theme .reauthenticate-page {
+  background: #111111;
+  color: #f5f5f3;
+}
+
+.dark-theme .reauthenticate-header h1 {
+  color: #f5f5f3;
+}
+
+.dark-theme .reauthenticate-back-button {
+  color: #f5f5f3;
+}
+
+.dark-theme .reauthenticate-back-button:hover {
+  background: #1d1d1b;
+}
+
+.dark-theme .reauthenticate-intro h2 {
+  color: #f5f5f3;
+}
+
+.dark-theme .reauthenticate-intro h2 span {
+  color: #777775;
+}
+
+.dark-theme .reauthenticate-intro p {
+  color: #999997;
+}
+
+.dark-theme .reauthenticate-card {
+  border-color: #292927;
+  background: #181817;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.18),
+    0 8px 28px rgba(0, 0, 0, 0.22);
+}
+
+.dark-theme .reauthenticate-provider-icon {
+  border-color: #2d2d2b;
+  background: #111111;
+  color: #f5f5f3;
+}
+
+.dark-theme .reauthenticate-signed-in {
+  color: #777775;
+}
+
+.dark-theme .reauthenticate-provider-name {
+  color: #f5f5f3;
+}
+
+.dark-theme .reauthenticate-divider span {
+  background: #363634;
+}
+
+.dark-theme .reauthenticate-divider svg {
+  color: #999997;
+}
+
+.dark-theme .reauthenticate-form label {
+  color: #a3a3a1;
+}
+
+.dark-theme .reauthenticate-password-box input {
+  border-color: #30302e;
+  background: #111111;
+  color: #f5f5f3;
+}
+
+.dark-theme .reauthenticate-password-box input::placeholder {
+  color: #666664;
+}
+
+.dark-theme .reauthenticate-password-box input:focus {
+  border-color: #f5f5f3;
+  box-shadow: 0 0 0 1px #f5f5f3;
+}
+
+.dark-theme .reauthenticate-password-box button {
+  color: #999997;
+}
+
+.dark-theme .reauthenticate-password-box button:hover {
+  color: #f5f5f3;
+}
+
+.dark-theme .reauthenticate-primary-button {
+  background: #f5f5f3;
+  color: #111111;
+}
+
+.dark-theme .reauthenticate-primary-button:hover {
+  opacity: 0.88;
+}
+
+.dark-theme .reauthenticate-provider-content p {
+  color: #999997;
+}
+
+.dark-theme .reauthenticate-error {
+  color: #ff6b7a;
+}
+
+.dark-theme .reauthenticate-cancel-button {
+  background: #292927;
+  color: #f5f5f3;
+}
+
+.dark-theme .reauthenticate-cancel-button:hover {
+  background: #333331;
+}
+
+.dark-theme .reauthenticate-warning {
+  border-color: #2d2d2b;
+  background: #111111;
+  color: #999997;
+}
+
+.dark-theme .reauthenticate-warning > svg {
+  color: #888886;
+}
+
+.dark-theme .reauthenticate-warning strong {
+  color: #f5f5f3;
+}
+
+.dark-theme .reauthenticate-warning span {
+  color: #777775;
+}

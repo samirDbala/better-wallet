@@ -1,0 +1,377 @@
+@import url("https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;600;700&display=swap");
+
+.onboarding {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  background: #ffffff;
+  font-family: "Azeret Mono", monospace;
+  color: #111111;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+  animation: onboardingPageIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.onboarding-content {
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  padding: 0 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wallet-illustration {
+  width: 100%;
+  margin-top: 128px;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: onboardingElementIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards;
+}
+
+.wallet-illustration svg {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.onboarding h1 {
+  width: 330px;
+  margin: 0;
+  font-family: "Azeret Mono", monospace;
+  font-size: 42px;
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #111111;
+  opacity: 0;
+  animation: onboardingElementIn 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.16s forwards;
+}
+
+.onboarding-text {
+  margin: 16px 0 0;
+  max-width: 100%;
+  font-family: "Azeret Mono", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  font-weight: 400;
+  color: #111111;
+  opacity: 0;
+  animation: onboardingElementIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.24s forwards;
+}
+
+.onboarding-text span {
+  display: block;
+  white-space: nowrap;
+}
+
+.onboarding-actions {
+  margin-top: auto;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.onboarding-button,
+.onboarding-account-button {
+  width: 100%;
+  height: 48px;
+  min-height: 48px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 16px;
+  cursor: pointer;
+  font-family: "Azeret Mono", monospace;
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.onboarding-button {
+  background: #111111;
+  color: #ffffff;
+  opacity: 0;
+  animation: onboardingButtonIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.34s forwards;
+}
+
+.onboarding-account-button {
+  background: #eeeeee;
+  color: #111111;
+  opacity: 0;
+  animation: onboardingButtonIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.42s forwards;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .onboarding-button:hover {
+    opacity: 0.85;
+  }
+
+  .onboarding-account-button:hover {
+    opacity: 0.85;
+  }
+}
+
+.onboarding-button:active,
+.onboarding-account-button:active {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
+
+@media (max-width: 599px) {
+  .onboarding-content {
+    max-width: 420px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+@keyframes onboardingPageIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes onboardingElementIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes onboardingButtonIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .onboarding,
+  .onboarding-content,
+  .wallet-illustration,
+  .onboarding h1,
+  .onboarding-text,
+  .onboarding-actions,
+  .onboarding-button,
+  .onboarding-account-button {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* Tablet */
+
+@media (min-width: 769px) and (max-width: 1199px) {
+  .onboarding {
+    align-items: center;
+    padding: 50px 60px;
+  }
+
+  .onboarding-content {
+    width: 100%;
+    max-width: 900px;
+    min-height: 0;
+    padding: 0;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    column-gap: 70px;
+    align-items: center;
+  }
+
+  .wallet-illustration {
+    width: 100%;
+    margin: 0;
+    grid-column: 1;
+    grid-row: 1 / 4;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wallet-illustration svg {
+    width: 100%;
+    max-width: 340px;
+    height: auto;
+    margin: 0;
+  }
+
+  .onboarding h1 {
+    width: auto;
+    max-width: 380px;
+    margin: 0;
+
+    grid-column: 2;
+    grid-row: 1;
+
+    font-size: 42px;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+  }
+
+  .onboarding-text {
+    width: 100%;
+    max-width: 380px;
+    margin: 18px 0 0;
+
+    grid-column: 2;
+    grid-row: 2;
+
+    font-size: 10px;
+    line-height: 1.6;
+  }
+
+  .onboarding-text span {
+    white-space: nowrap;
+  }
+
+  .onboarding-actions {
+    width: 100%;
+    margin: 34px 0 0;
+    padding: 0;
+
+    grid-column: 2;
+    grid-row: 3;
+
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .onboarding-button,
+  .onboarding-account-button {
+    width: 100%;
+    height: 46px;
+    min-height: 46px;
+    border-radius: 8px;
+    font-size: 9px;
+    padding: 0 12px;
+  }
+}
+
+/* Desktop */
+
+@media (min-width: 1200px) {
+  .onboarding {
+    align-items: center;
+    padding: 60px 80px;
+  }
+
+  .onboarding-content {
+    width: 100%;
+    max-width: 1180px;
+    min-height: 0;
+    padding: 0;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 500px);
+    grid-template-rows: auto auto auto;
+    column-gap: 100px;
+    align-items: center;
+  }
+
+  .wallet-illustration {
+    width: 100%;
+    margin: 0;
+    grid-column: 1;
+    grid-row: 1 / 4;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wallet-illustration svg {
+    width: 100%;
+    max-width: 460px;
+    height: auto;
+    margin: 0;
+  }
+
+  .onboarding h1 {
+    width: auto;
+    max-width: 500px;
+    margin: 0;
+
+    grid-column: 2;
+    grid-row: 1;
+
+    font-size: 58px;
+    line-height: 1.02;
+    letter-spacing: -0.05em;
+  }
+
+  .onboarding-text {
+    width: 100%;
+    max-width: 500px;
+    margin: 22px 0 0;
+
+    grid-column: 2;
+    grid-row: 2;
+
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .onboarding-text span {
+    white-space: nowrap;
+  }
+
+  .onboarding-actions {
+    width: 100%;
+    margin: 40px 0 0;
+    padding: 0;
+
+    grid-column: 2;
+    grid-row: 3;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .onboarding-button,
+  .onboarding-account-button {
+    flex: 0 0 210px;
+    width: 210px;
+    height: 50px;
+    min-height: 50px;
+    border-radius: 9px;
+    font-size: 10px;
+  }
+}

@@ -1,0 +1,664 @@
+.budget-setup-page {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.budget-setup-form {
+  width: 100%;
+  max-width: 400px;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 41.5dvh;
+  background: #ffffff;
+}
+
+.budget-setup-logout {
+  position: absolute;
+  top: 26px;
+  right: 22px;
+  z-index: 10;
+
+  width: 76px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  box-sizing: border-box;
+
+  border: 0;
+  border-radius: 7px;
+
+  background: #eeeeee;
+  color: #111111;
+
+  font-family: "Azeret Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  animation: budgetSetupLogoutIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.budget-setup-logout svg {
+  transition: transform 0.2s ease;
+}
+
+.budget-setup-logout:hover {
+  background: #e6e6e6;
+}
+
+.budget-setup-logout:hover svg {
+  transform: translateX(2px);
+}
+
+.budget-setup-logout:active {
+  transform: scale(0.97);
+}
+
+.budget-setup-logout:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.budget-setup-form h1 {
+  margin: 0 0 26px;
+  padding: 0;
+  text-align: center;
+  color: #111111;
+  font-family: "Azeret Mono", monospace;
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 700;
+  animation: budgetSetupTitleIn 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+}
+
+.budget-setup-form label {
+  display: block;
+  margin: 0 0 6px;
+  padding: 0;
+  color: #111111;
+  font-family: "Azeret Mono", monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 400;
+  animation: budgetSetupFieldIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+
+.budget-setup-form select {
+  width: 100%;
+  height: 34px;
+  box-sizing: border-box;
+  margin: 0 0 12px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  outline: none;
+  background: #eeeeee;
+  color: #111111;
+  cursor: pointer;
+  font-family: "Azeret Mono", monospace;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 400;
+  animation: budgetSetupInputIn 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.budget-setup-form select:hover {
+  background: #e9e9e9;
+}
+
+.budget-setup-form select:focus {
+  background: #e9e9e9;
+}
+
+.budget-setup-form select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.budget-setup-form input {
+  width: 100%;
+  height: 38px;
+  box-sizing: border-box;
+  margin: 0 0 12px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 7px;
+  outline: none;
+  background: #eeeeee;
+  color: #111111;
+  font-family: "Azeret Mono", monospace;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 400;
+  animation: budgetSetupInputIn 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.31s both;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.budget-setup-form input:hover {
+  background: #e9e9e9;
+}
+
+.budget-setup-form input:focus {
+  background: #e9e9e9;
+  transform: translateY(-1px);
+}
+
+.budget-setup-form input::placeholder {
+  color: #aaaaaa;
+  opacity: 1;
+}
+
+.budget-setup-form input:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.budget-create-button {
+  width: 100%;
+  height: 34px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: #111111;
+  color: #ffffff;
+  cursor: pointer;
+  font-family: "Azeret Mono", monospace;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 600;
+  animation: budgetSetupButtonIn 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.37s both;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.budget-create-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.budget-create-button:active:not(:disabled) {
+  transform: scale(0.985);
+  box-shadow: none;
+}
+
+.budget-create-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.budget-error {
+  margin: 0 0 12px;
+  color: #b42318;
+  font-family: "Azeret Mono", monospace;
+  font-size: 10px;
+  line-height: 1.4;
+  animation: budgetSetupErrorIn 0.25s ease both;
+}
+
+@keyframes budgetSetupLogoutIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes budgetSetupTitleIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes budgetSetupFieldIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes budgetSetupInputIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 9px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes budgetSetupButtonIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes budgetSetupErrorIn {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 600px) {
+  .budget-setup-page {
+    background: #e9e9e9;
+    padding: 0 20px;
+  }
+
+  .budget-setup-form {
+    border-left: 1px solid #e5e5e5;
+    border-right: 1px solid #e5e5e5;
+  }
+
+  .budget-setup-logout {
+    right: calc(50% - 166px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .budget-setup-page,
+  .budget-setup-form,
+  .budget-setup-logout,
+  .budget-setup-form h1,
+  .budget-setup-form label,
+  .budget-setup-form select,
+  .budget-setup-form input,
+  .budget-create-button,
+  .budget-error {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.budget-setup-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: budgetSetupModalOverlayIn 0.25s ease both;
+}
+
+.budget-setup-modal {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  box-sizing: border-box;
+  padding: 20px 24px 28px;
+  border-radius: 34px;
+  background: #f7f7f5;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.14);
+  animation: budgetSetupModalIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.budget-setup-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #eeeeee;
+  color: #111111;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.budget-setup-close:hover {
+  background: #e6e6e6;
+}
+
+.budget-setup-close:active {
+  transform: scale(0.95);
+}
+
+.budget-setup-close:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.budget-setup-modal-form {
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  animation: none;
+}
+
+.budget-setup-modal-form h1 {
+  width: 100%;
+  margin: 0 0 30px;
+  padding: 0;
+  text-align: center;
+}
+
+.budget-setup-modal-form label {
+  margin-bottom: 7px;
+}
+
+.budget-setup-modal-form select {
+  margin-bottom: 15px;
+}
+
+.budget-setup-modal-form input {
+  margin-bottom: 15px;
+}
+
+@keyframes budgetSetupModalOverlayIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes budgetSetupModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 599px) {
+  .budget-setup-modal-overlay {
+    align-items: center;
+    padding: 14px;
+  }
+
+  .budget-setup-modal {
+    max-width: 360px;
+    padding: 20px 24px 28px;
+    border-radius: 34px;
+  }
+
+  .budget-setup-modal-form h1 {
+    margin-bottom: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .budget-setup-modal-overlay,
+  .budget-setup-modal {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* Budget Setup page tablet design */
+
+@media (min-width: 769px) and (max-width: 1199px) {
+  .budget-setup-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 40px;
+    align-items: center;
+    background: #f1f1ef;
+  }
+
+  .budget-setup-page .budget-setup-form {
+    width: min(100%, 520px);
+    max-width: 520px;
+    min-height: auto;
+    padding: 58px 64px 62px;
+    border: 1px solid #dededb;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.06);
+  }
+
+  .budget-setup-page .budget-setup-form h1 {
+    margin-bottom: 34px;
+    font-size: 18px;
+    line-height: 1.25;
+    letter-spacing: -0.04em;
+  }
+
+  .budget-setup-page .budget-setup-form label {
+    margin-bottom: 9px;
+    font-size: 10px;
+  }
+
+  .budget-setup-page .budget-setup-form select {
+    height: 46px;
+    margin-bottom: 20px;
+    padding: 0 15px;
+    border-radius: 9px;
+    font-size: 10px;
+  }
+
+  .budget-setup-page .budget-setup-form input {
+    height: 48px;
+    margin-bottom: 20px;
+    padding: 0 15px;
+    border-radius: 9px;
+    font-size: 11px;
+  }
+
+  .budget-setup-page .budget-create-button {
+    height: 48px;
+    margin-top: 2px;
+    border-radius: 9px;
+    font-size: 10px;
+  }
+
+  .budget-setup-page .budget-error {
+    margin: -4px 0 15px;
+    font-size: 9px;
+  }
+
+  .budget-setup-page .budget-setup-logout {
+    top: 30px;
+    right: 40px;
+    width: 82px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 9px;
+  }
+
+  .budget-setup-modal-overlay {
+    padding: 30px;
+  }
+
+  .budget-setup-modal {
+    max-width: 430px;
+    padding: 30px 34px 34px;
+    border-radius: 20px;
+  }
+
+  .budget-setup-close {
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .budget-setup-modal-form h1 {
+    margin-bottom: 32px;
+  }
+
+  .budget-setup-modal-form select,
+  .budget-setup-modal-form input {
+    height: 46px;
+  }
+}
+
+/* Budget Setup page desktop design */
+
+@media (min-width: 1200px) {
+  .budget-setup-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 60px;
+    align-items: center;
+    background: #f1f1ef;
+  }
+
+  .budget-setup-page .budget-setup-form {
+    width: 100%;
+    max-width: 580px;
+    min-height: auto;
+    padding: 70px 82px 74px;
+    border: 1px solid #dededb;
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.06);
+  }
+
+  .budget-setup-page .budget-setup-form h1 {
+    margin-bottom: 38px;
+    font-size: 21px;
+    line-height: 1.25;
+    letter-spacing: -0.045em;
+  }
+
+  .budget-setup-page .budget-setup-form label {
+    margin-bottom: 9px;
+    font-size: 10px;
+  }
+
+  .budget-setup-page .budget-setup-form select {
+    height: 48px;
+    margin-bottom: 22px;
+    padding: 0 16px;
+    border-radius: 9px;
+    font-size: 10px;
+  }
+
+  .budget-setup-page .budget-setup-form input {
+    height: 50px;
+    margin-bottom: 22px;
+    padding: 0 16px;
+    border-radius: 9px;
+    font-size: 11px;
+  }
+
+  .budget-setup-page .budget-create-button {
+    height: 50px;
+    margin-top: 2px;
+    border-radius: 9px;
+    font-size: 10px;
+  }
+
+  .budget-setup-page .budget-error {
+    margin: -4px 0 16px;
+    font-size: 9px;
+  }
+
+  .budget-setup-page .budget-setup-logout {
+    top: 32px;
+    right: 48px;
+    width: 84px;
+    height: 37px;
+    border-radius: 8px;
+    font-size: 9px;
+  }
+
+  .budget-setup-modal-overlay {
+    padding: 40px;
+  }
+
+  .budget-setup-modal {
+    max-width: 460px;
+    padding: 32px 38px 38px;
+    border-radius: 20px;
+  }
+
+  .budget-setup-close {
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .budget-setup-modal-form h1 {
+    margin-bottom: 34px;
+  }
+
+  .budget-setup-modal-form select,
+  .budget-setup-modal-form input {
+    height: 48px;
+  }
+}
