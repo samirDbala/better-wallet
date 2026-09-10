@@ -38,13 +38,19 @@ export async function deleteAccountCompletely() {
   const budgetsRef = collection(db, "users", userId, "budgets");
   const expensesRef = collection(db, "users", userId, "expenses");
   const notificationsRef = collection(db, "users", userId, "notifications");
+  const budgetControlRef = collection(db, "users", userId, "budgetControl");
 
-  const [budgetsSnapshot, expensesSnapshot, notificationsSnapshot] =
-    await Promise.all([
-      getDocs(budgetsRef),
-      getDocs(expensesRef),
-      getDocs(notificationsRef),
-    ]);
+  const [
+    budgetsSnapshot,
+    expensesSnapshot,
+    notificationsSnapshot,
+    budgetControlSnapshot,
+  ] = await Promise.all([
+    getDocs(budgetsRef),
+    getDocs(expensesRef),
+    getDocs(notificationsRef),
+    getDocs(budgetControlRef),
+  ]);
 
   const budgetRefs = budgetsSnapshot.docs.map((budgetDoc) =>
     doc(db, "users", userId, "budgets", budgetDoc.id),
@@ -58,9 +64,14 @@ export async function deleteAccountCompletely() {
     doc(db, "users", userId, "notifications", notificationDoc.id),
   );
 
+  const budgetControlRefs = budgetControlSnapshot.docs.map((controlDoc) =>
+    doc(db, "users", userId, "budgetControl", controlDoc.id),
+  );
+
   await deleteDocumentReferences(notificationRefs);
   await deleteDocumentReferences(expenseRefs);
   await deleteDocumentReferences(budgetRefs);
+  await deleteDocumentReferences(budgetControlRefs);
 
   await deleteDoc(doc(db, "users", userId));
 
