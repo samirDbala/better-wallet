@@ -370,12 +370,12 @@ body.dark-theme .expenses-action-sheet > button.active {
 }
 
 body.dark-theme .expenses-action-sheet > button.delete-action {
-  background: #3a3a3a;
-  color: #f5f5f5;
+  background: #4a2424;
+  color: #ff8b8b;
 }
 
 body.dark-theme .expenses-action-sheet > button.delete-action:hover {
-  background: #444;
+  background: #572b2b;
 }
 
 body.dark-theme .expenses-action-sheet > button.cancel-action {
@@ -393,8 +393,12 @@ body.dark-theme .selected-expense span {
 }
 
 body.dark-theme .clear-all-expenses-action {
-  background: #2c2c2c !important;
-  color: #f5f5f5 !important;
+  background: #4a2424 !important;
+  color: #ff8b8b !important;
+}
+
+body.dark-theme .clear-all-expenses-action:hover {
+  background: #572b2b !important;
 }
 
 body.dark-theme .clear-all-confirm-action {
@@ -606,12 +610,12 @@ body.dark-theme .budget-sheet-action:hover {
 }
 
 body.dark-theme .budget-delete-action {
-  background: #2c2c2c;
-  color: #f5f5f5;
+  background: #4a2424;
+  color: #ff8b8b;
 }
 
 body.dark-theme .budget-delete-action:hover {
-  background: #353535;
+  background: #572b2b;
 }
 
 body.dark-theme .budget-cancel-action {
@@ -760,14 +764,14 @@ body.dark-theme .budget-details-action-sheet > button:hover {
 body.dark-theme
   .budget-details-action-sheet
   > button.budget-details-delete-action {
-  background: #3a3a3a;
-  color: #f5f5f5;
+  background: #4a2424;
+  color: #ff8b8b;
 }
 
 body.dark-theme
   .budget-details-action-sheet
   > button.budget-details-delete-action:hover {
-  background: #444;
+  background: #572b2b;
 }
 
 body.dark-theme

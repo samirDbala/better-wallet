@@ -454,12 +454,12 @@
 }
 
 .budget-details-action-sheet > button.budget-details-delete-action {
-  background: #e7e7e7;
-  color: #111;
+  background: #ffc4c4;
+  color: #e34b4b;
 }
 
 .budget-details-action-sheet > button.budget-details-delete-action:hover {
-  background: #dddddd;
+  background: #f5b8b8;
 }
 
 .budget-details-action-sheet > button.budget-details-cancel-action {

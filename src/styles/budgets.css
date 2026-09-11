@@ -548,12 +548,12 @@
 
 .budget-delete-action {
   border: 0;
-  background: #eeeeee;
-  color: #111;
+  background: #ffc4c4;
+  color: #e34b4b;
 }
 
 .budget-delete-action:hover {
-  background: #e7e7e7;
+  background: #f5b8b8;
 }
 
 .budget-delete-action:active {

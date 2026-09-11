@@ -503,12 +503,12 @@
 /* Delete */
 
 .expenses-action-sheet > button.delete-action {
-  background: #e7e7e7;
-  color: #111;
+  background: #ffc4c4;
+  color: #e34b4b;
 }
 
 .expenses-action-sheet > button.delete-action:hover {
-  background: #dddddd;
+  background: #f5b8b8;
 }
 
 /* Cancel */
@@ -557,8 +557,12 @@
 /* Clear all */
 
 .clear-all-expenses-action {
-  background: #eeeeee !important;
-  color: #111 !important;
+  background: #ffc4c4 !important;
+  color: #e34b4b !important;
+}
+
+.clear-all-expenses-action:hover {
+  background: #f5b8b8 !important;
 }
 
 .clear-all-expenses-action:disabled {
@@ -574,12 +578,12 @@
 }
 
 .clear-all-confirm-action {
-  background: #f0dddd !important;
-  color: #9b3030 !important;
+  background: #ffc4c4 !important;
+  color: #e34b4b !important;
 }
 
 .clear-all-confirm-action:hover {
-  background: #e9d2d2 !important;
+  background: #f5b8b8 !important;
 }
 
 .clear-all-confirm-action:disabled {
