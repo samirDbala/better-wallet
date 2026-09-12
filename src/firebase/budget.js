@@ -710,10 +710,9 @@ export async function completeBudget(userId, budgetId) {
       throw new Error("BUDGET_ALREADY_COMPLETED");
     }
 
-    transaction.update(budgetRef, {
-      status: "completed",
-      completedAt: serverTimestamp(),
-    });
+    let nextBudgetRef = null;
+    let nextBudgetSnapshot = null;
+    let nextBudgetId = null;
 
     if (budget.repeatEnabled) {
       if (!budget.startDate?.toDate || !budget.endDate?.toDate) {
@@ -723,10 +722,21 @@ export async function completeBudget(userId, budgetId) {
       const startDate = new Date(completedAt);
       const endDate = calculateEndDate(startDate, budget.period);
 
-      const nextBudgetId = `${budgetId}_${startDate.getTime()}`;
-      const nextBudgetRef = doc(db, "users", userId, "budgets", nextBudgetId);
+      nextBudgetId = `${budgetId}_${startDate.getTime()}`;
 
-      const nextBudgetSnapshot = await transaction.get(nextBudgetRef);
+      nextBudgetRef = doc(db, "users", userId, "budgets", nextBudgetId);
+
+      nextBudgetSnapshot = await transaction.get(nextBudgetRef);
+    }
+
+    transaction.update(budgetRef, {
+      status: "completed",
+      completedAt: serverTimestamp(),
+    });
+
+    if (budget.repeatEnabled) {
+      const startDate = new Date(completedAt);
+      const endDate = calculateEndDate(startDate, budget.period);
 
       if (!nextBudgetSnapshot.exists()) {
         transaction.set(nextBudgetRef, {
