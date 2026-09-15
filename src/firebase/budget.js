@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 
 import { db } from "./config";
+import { updateBudgetNotification } from "./notifications";
 
 function getBudgetDates(period, customStartDate = null, customEndDate = null) {
   const startDate = customStartDate ? new Date(customStartDate) : new Date();
@@ -251,6 +252,8 @@ export async function updateBudget(
     endDate,
     updatedAt: serverTimestamp(),
   });
+
+  await updateBudgetNotification(userId, budgetId, amount, period);
 }
 
 export async function setBudgetRepeat(userId, budgetId, repeatEnabled) {

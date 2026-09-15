@@ -55,6 +55,36 @@ export async function createBudgetNotification(
   );
 }
 
+export async function updateBudgetNotification(
+  userId,
+  budgetId,
+  amount,
+  period,
+) {
+  if (!userId || !budgetId) {
+    return;
+  }
+
+  const periodLabel = period.toLowerCase();
+
+  await setDoc(
+    doc(db, "users", userId, "notifications", `budget_${budgetId}`),
+    {
+      type: "budget_created",
+      budgetId,
+      amount: Number(amount),
+      period,
+      title: "Budget created",
+      message: `Your ${formatCurrency(
+        Number(amount),
+      )} ${periodLabel} budget is now active.`,
+    },
+    {
+      merge: true,
+    },
+  );
+}
+
 export async function createExpenseNotification(
   userId,
   expenseId,
