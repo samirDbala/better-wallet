@@ -137,7 +137,6 @@ function Expenses() {
             .filter((budget) => {
               if (
                 !budget.startDate ||
-                !budget.endDate ||
                 budget.status === "held" ||
                 budget.status === "completed"
               ) {
@@ -145,6 +144,11 @@ function Expenses() {
               }
 
               const startDate = budget.startDate.toDate();
+
+              if (!budget.endDate) {
+                return startDate <= now;
+              }
+
               const endDate = budget.endDate.toDate();
 
               return startDate <= now && now < endDate;
@@ -235,6 +239,8 @@ function Expenses() {
 
     return date.toLocaleDateString("en-IN", {
       weekday: "long",
+      day: "2-digit",
+      month: "short",
     });
   }
 

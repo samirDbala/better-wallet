@@ -940,7 +940,12 @@ function Home() {
               className="view-expenses-button"
               type="button"
               aria-label="View all expenses"
-              onClick={() => navigate("/expenses")}
+              onClick={() => {
+                if (budget) {
+                  navigate("/expenses");
+                }
+              }}
+              disabled={!budget}
             >
               <ArrowUpRight size={17} strokeWidth={1.8} />
             </button>

@@ -13,27 +13,33 @@ import {
 
 import { db } from "./config";
 
-function getBudgetDates(period) {
-  const startDate = new Date();
+function getBudgetDates(period, customStartDate = null, customEndDate = null) {
+  const startDate = customStartDate ? new Date(customStartDate) : new Date();
+
   startDate.setHours(0, 0, 0, 0);
 
-  const endDate = new Date(startDate);
+  if (period === "custom") {
+    if (customEndDate === null) {
+      return {
+        startDate,
+        endDate: null,
+      };
+    }
 
-  if (period === "daily") {
-    endDate.setDate(endDate.getDate() + 1);
+    const endDate = new Date(customEndDate);
+    endDate.setHours(0, 0, 0, 0);
+
+    if (endDate <= startDate) {
+      throw new Error("INVALID_CUSTOM_DATES");
+    }
+
+    return {
+      startDate,
+      endDate,
+    };
   }
 
-  if (period === "weekly") {
-    endDate.setDate(endDate.getDate() + 7);
-  }
-
-  if (period === "monthly") {
-    endDate.setMonth(endDate.getMonth() + 1);
-  }
-
-  if (period === "yearly") {
-    endDate.setFullYear(endDate.getFullYear() + 1);
-  }
+  const endDate = calculateEndDate(startDate, period);
 
   return {
     startDate,
@@ -87,12 +93,22 @@ function getActiveBudgetControlRef(userId) {
   return doc(db, "users", userId, "budgetControl", "active");
 }
 
-export async function createBudget(userId, amount, period) {
+export async function createBudget(
+  userId,
+  amount,
+  period,
+  customStartDate = null,
+  customEndDate = null,
+) {
   if (!userId) {
     throw new Error("USER_ID_REQUIRED");
   }
 
-  const { startDate, endDate } = getBudgetDates(period);
+  const { startDate, endDate } = getBudgetDates(
+    period,
+    customStartDate,
+    customEndDate,
+  );
 
   const budgetRef = doc(db, "users", userId, "budgets", `${Date.now()}`);
 
@@ -122,12 +138,13 @@ export async function createBudget(userId, amount, period) {
 
           if (
             existingBudget.status === "running" &&
-            existingBudget.startDate?.toDate &&
-            existingBudget.endDate?.toDate
+            existingBudget.startDate?.toDate
           ) {
-            const isActive =
-              existingBudget.startDate.toDate() <= now &&
-              now < existingBudget.endDate.toDate();
+            const startDate = existingBudget.startDate.toDate();
+
+            const isActive = existingBudget.endDate?.toDate
+              ? startDate <= now && now < existingBudget.endDate.toDate()
+              : startDate <= now;
 
             if (isActive) {
               throw new Error("ACTIVE_BUDGET_EXISTS");
@@ -157,7 +174,14 @@ export async function createBudget(userId, amount, period) {
   return budgetRef.id;
 }
 
-export async function updateBudget(userId, budgetId, amount, period) {
+export async function updateBudget(
+  userId,
+  budgetId,
+  amount,
+  period,
+  customStartDate = null,
+  customEndDate = null,
+) {
   if (!userId || !budgetId) {
     throw new Error("USER_ID_AND_BUDGET_ID_REQUIRED");
   }
@@ -182,15 +206,40 @@ export async function updateBudget(userId, budgetId, amount, period) {
     throw new Error("INVALID_BUDGET_DATES");
   }
 
-  const startDate = new Date(originalStartDate);
-  const endDate = calculateEndDate(startDate, period);
+  let startDate;
+  let endDate;
+
+  if (period === "custom") {
+    startDate = customStartDate
+      ? new Date(customStartDate)
+      : new Date(originalStartDate);
+
+    startDate.setHours(0, 0, 0, 0);
+
+    if (customEndDate === null) {
+      endDate = null;
+    } else {
+      endDate = new Date(customEndDate);
+      endDate.setHours(0, 0, 0, 0);
+
+      if (endDate <= startDate) {
+        throw new Error("INVALID_CUSTOM_DATES");
+      }
+    }
+  } else {
+    startDate = new Date(originalStartDate);
+    endDate = calculateEndDate(startDate, period);
+  }
 
   if (budget.status === "held" && budget.heldAt?.toDate) {
     const heldAt = budget.heldAt.toDate();
     const pausedDuration = Date.now() - heldAt.getTime();
 
     startDate.setTime(startDate.getTime() + pausedDuration);
-    endDate.setTime(endDate.getTime() + pausedDuration);
+
+    if (endDate) {
+      endDate.setTime(endDate.getTime() + pausedDuration);
+    }
   }
 
   const budgetRef = doc(db, "users", userId, "budgets", budgetId);
@@ -217,6 +266,10 @@ export async function setBudgetRepeat(userId, budgetId, repeatEnabled) {
 
   if (budget.status === "completed") {
     throw new Error("BUDGET_COMPLETED");
+  }
+
+  if (budget.period === "custom" && repeatEnabled) {
+    throw new Error("CUSTOM_BUDGET_CANNOT_REPEAT");
   }
 
   await updateDoc(doc(db, "users", userId, "budgets", budgetId), {
@@ -306,7 +359,7 @@ export async function getActiveBudget(userId) {
       ...budgetDoc.data(),
     }))
     .filter((budget) => {
-      if (!budget.startDate || !budget.endDate) {
+      if (!budget.startDate?.toDate) {
         return false;
       }
 
@@ -315,6 +368,11 @@ export async function getActiveBudget(userId) {
       }
 
       const startDate = budget.startDate.toDate();
+
+      if (!budget.endDate?.toDate) {
+        return startDate <= now;
+      }
+
       const endDate = budget.endDate.toDate();
 
       return startDate <= now && now < endDate;
@@ -515,8 +573,7 @@ export async function getPreviousBudget(
       if (
         budget.id === currentBudgetId ||
         budget.period !== currentPeriod ||
-        !budget.startDate ||
-        !budget.endDate
+        !budget.startDate
       ) {
         return false;
       }
@@ -525,9 +582,15 @@ export async function getPreviousBudget(
         return false;
       }
 
-      const endDate = budget.endDate.toDate();
+      if (budget.status === "completed") {
+        return true;
+      }
 
-      return budget.status === "completed" || endDate <= now;
+      if (!budget.endDate?.toDate) {
+        return false;
+      }
+
+      return budget.endDate.toDate() <= now;
     });
 
   if (previousBudgets.length === 0) {
@@ -625,8 +688,12 @@ export async function resumeBudget(userId, budgetId) {
     let startDate = budget.startDate?.toDate?.();
     let endDate = budget.endDate?.toDate?.();
 
-    if (!startDate || !endDate) {
+    if (!startDate) {
       throw new Error("INVALID_BUDGET_DATES");
+    }
+
+    if (budget.period === "custom" && !budget.endDate?.toDate) {
+      endDate = null;
     }
 
     // Pause the budget countdown while it is held.
@@ -636,7 +703,10 @@ export async function resumeBudget(userId, budgetId) {
       const pausedDuration = Date.now() - heldAt.getTime();
 
       startDate = new Date(startDate.getTime() + pausedDuration);
-      endDate = new Date(endDate.getTime() + pausedDuration);
+
+      if (endDate) {
+        endDate = new Date(endDate.getTime() + pausedDuration);
+      }
     }
 
     const activeBudgetControlSnapshot = await transaction.get(
@@ -908,7 +978,7 @@ export async function getLatestFinishedBudget(userId) {
       ...budgetDoc.data(),
     }))
     .filter((budget) => {
-      if (!budget.startDate || !budget.endDate) {
+      if (!budget.startDate) {
         return false;
       }
 
@@ -920,9 +990,11 @@ export async function getLatestFinishedBudget(userId) {
         return true;
       }
 
-      const endDate = budget.endDate.toDate();
+      if (!budget.endDate?.toDate) {
+        return false;
+      }
 
-      return endDate <= now;
+      return budget.endDate.toDate() <= now;
     });
 
   if (finishedBudgets.length === 0) {

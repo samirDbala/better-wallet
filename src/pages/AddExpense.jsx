@@ -40,7 +40,6 @@ function AddExpense({ onClose, onExpenseAdded }) {
             .filter((item) => {
               if (
                 !item.startDate ||
-                !item.endDate ||
                 item.status === "held" ||
                 item.status === "completed"
               ) {
@@ -48,6 +47,11 @@ function AddExpense({ onClose, onExpenseAdded }) {
               }
 
               const startDate = item.startDate.toDate();
+
+              if (!item.endDate) {
+                return startDate <= now;
+              }
+
               const endDate = item.endDate.toDate();
 
               return startDate <= now && now < endDate;

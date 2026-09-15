@@ -80,7 +80,6 @@ function Notifications() {
             .filter((budget) => {
               if (
                 !budget.startDate ||
-                !budget.endDate ||
                 budget.status === "held" ||
                 budget.status === "completed"
               ) {
@@ -88,6 +87,11 @@ function Notifications() {
               }
 
               const startDate = budget.startDate.toDate();
+
+              if (!budget.endDate) {
+                return startDate <= now;
+              }
+
               const endDate = budget.endDate.toDate();
 
               return startDate <= now && now < endDate;

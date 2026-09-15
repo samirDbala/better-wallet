@@ -17,8 +17,7 @@
   padding: 0 16px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding-top: 41.5dvh;
+  justify-content: center;
   background: #ffffff;
 }
 
@@ -223,6 +222,7 @@
   line-height: 1.4;
   animation: budgetSetupErrorIn 0.25s ease both;
 }
+
 
 @keyframes budgetSetupLogoutIn {
   from {

@@ -121,12 +121,16 @@ function Budgets() {
     const startDate = getDate(budget.startDate);
     const endDate = getDate(budget.endDate);
 
-    if (!startDate || !endDate) {
+    if (!startDate) {
       return false;
     }
 
     if (budget.status === "held" || budget.status === "completed") {
       return false;
+    }
+
+    if (!endDate) {
+      return startDate <= now;
     }
 
     return startDate <= now && now < endDate;
@@ -603,22 +607,24 @@ function Budgets() {
               </button>
             )}
 
-            {!isCompleted(selectedBudget) && !isHeld(selectedBudget) && (
-              <button
-                className="budget-sheet-action"
-                type="button"
-                onClick={handleToggleRepeat}
-                disabled={actionLoading !== "" || deleting}
-              >
-                <Repeat2 size={15} strokeWidth={1.8} />
+            {!isCompleted(selectedBudget) &&
+              !isHeld(selectedBudget) &&
+              selectedBudget.period !== "custom" && (
+                <button
+                  className="budget-sheet-action"
+                  type="button"
+                  onClick={handleToggleRepeat}
+                  disabled={actionLoading !== "" || deleting}
+                >
+                  <Repeat2 size={15} strokeWidth={1.8} />
 
-                {actionLoading === "repeat"
-                  ? "PLEASE WAIT..."
-                  : selectedBudget.repeatEnabled
-                    ? "REPEAT BUDGET: ON"
-                    : "REPEAT BUDGET: OFF"}
-              </button>
-            )}
+                  {actionLoading === "repeat"
+                    ? "PLEASE WAIT..."
+                    : selectedBudget.repeatEnabled
+                      ? "REPEAT BUDGET: ON"
+                      : "REPEAT BUDGET: OFF"}
+                </button>
+              )}
 
             {isRunning(selectedBudget) && (
               <>
