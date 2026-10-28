@@ -23,11 +23,13 @@ import {
   syncBudgetAlertNotifications,
 } from "./notifications";
 
+
 export async function createExpense(userId, expenseData) {
   if (!userId) {
     throw new Error("User ID is required.");
   }
 
+  // Save the expense first. The form only needs to wait for this write.
   const expenseRef = await addDoc(collection(db, "users", userId, "expenses"), {
     userId,
     budgetId: expenseData.budgetId,
@@ -39,22 +41,28 @@ export async function createExpense(userId, expenseData) {
     updatedAt: serverTimestamp(),
   });
 
-  try {
-    await createExpenseNotification(
-      userId,
-      expenseRef.id,
-      expenseData.budgetId,
-      expenseData.name,
-      expenseData.amount,
-    );
-  } catch (error) {
-    console.error("Unable to create expense notification:", error);
-  }
+  // Run notifications and budget-alert processing separately.
+  // Failures here must not make a successfully saved expense appear to fail.
+  void (async () => {
+    try {
+      await createExpenseNotification(
+        userId,
+        expenseRef.id,
+        expenseData.budgetId,
+        expenseData.name,
+        expenseData.amount,
+      );
+    } catch (error) {
+      console.error("Unable to create expense notification:", error);
+    }
 
-  try {
-    const activeBudget = await getActiveBudget(userId);
+    try {
+      const activeBudget = await getActiveBudget(userId);
 
-    if (activeBudget && activeBudget.id === expenseData.budgetId) {
+      if (!activeBudget || activeBudget.id !== expenseData.budgetId) {
+        return;
+      }
+
       const budgetExpenses = await getExpenses(userId, expenseData.budgetId);
 
       const totalSpent = budgetExpenses.reduce(
@@ -64,14 +72,15 @@ export async function createExpense(userId, expenseData) {
 
       const newExpenseAmount = Number(expenseData.amount || 0);
       const previousTotalSpent = totalSpent - newExpenseAmount;
-
       const budgetAmount = Number(activeBudget.amount);
 
-      const previousPercentage =
-        budgetAmount > 0 ? (previousTotalSpent / budgetAmount) * 100 : 0;
+      if (budgetAmount <= 0) {
+        return;
+      }
 
-      const currentPercentage =
-        budgetAmount > 0 ? (totalSpent / budgetAmount) * 100 : 0;
+      const previousPercentage = (previousTotalSpent / budgetAmount) * 100;
+
+      const currentPercentage = (totalSpent / budgetAmount) * 100;
 
       if (
         previousPercentage < 80 &&
@@ -101,7 +110,7 @@ export async function createExpense(userId, expenseData) {
         );
       }
 
-      if (currentPercentage >= 100) {
+      if (previousPercentage < 100 && currentPercentage >= 100) {
         await createBudgetAlertNotification(
           userId,
           activeBudget.id,
@@ -110,10 +119,10 @@ export async function createExpense(userId, expenseData) {
           totalSpent,
         );
       }
+    } catch (error) {
+      console.error("Unable to create budget alert:", error);
     }
-  } catch (error) {
-    console.error("Unable to create budget alert:", error);
-  }
+  })();
 
   return expenseRef.id;
 }

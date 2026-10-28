@@ -324,17 +324,19 @@ function Expenses() {
       const day = formatDay(date);
 
       if (!groups[day]) {
-        groups[day] = [];
+        groups[day] = {
+          date,
+          expenses: [],
+          total: 0,
+        };
       }
 
-      groups[day].push(expense);
+      groups[day].expenses.push(expense);
+      groups[day].total += Number(expense.amount || 0);
     });
 
     return Object.entries(groups).sort(([, first], [, second]) => {
-      const firstDate = getExpenseDate(first[0]);
-      const secondDate = getExpenseDate(second[0]);
-
-      return secondDate.getTime() - firstDate.getTime();
+      return second.date.getTime() - first.date.getTime();
     });
   }, [filteredExpenses]);
 
@@ -591,12 +593,26 @@ function Expenses() {
           </div>
         ) : (
           <section className="grouped-expenses">
-            {groupedExpenses.map(([day, dayExpenses]) => (
+            {groupedExpenses.map(([day, group]) => (
               <div className="expense-day-group" key={day}>
-                <h2>{day}</h2>
+                <div className="expense-day-header">
+                  <h2>{day}</h2>
+                  <span className="expense-day-label">Total Spent</span>
+                </div>
+
+                <div className="expense-day-summary">
+                  <span>
+                    {group.expenses.length}{" "}
+                    {group.expenses.length === 1 ? "expense" : "expenses"}
+                  </span>
+
+                  <strong className="expense-day-total">
+                    {formatCurrency(group.total)}
+                  </strong>
+                </div>
 
                 <div className="expense-day-list">
-                  {dayExpenses.map((expense) => {
+                  {group.expenses.map((expense) => {
                     const CategoryIcon = getCategoryIcon(expense.category);
 
                     const expenseDate = getExpenseDate(expense);

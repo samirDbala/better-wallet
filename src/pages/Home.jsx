@@ -153,9 +153,13 @@ function Home() {
   );
 
   useEffect(() => {
+    let cancelled = false;
+
     async function loadHomeData() {
-      if (!user) {
+      if (!user?.uid) {
         setBudget(null);
+        setPreviousBudget(null);
+        setPreviousBudgetSpent(0);
         setExpenses([]);
         setExpensesLoading(false);
         return;
@@ -164,13 +168,14 @@ function Home() {
       try {
         const activeBudget = await getActiveBudget(user.uid);
 
-        setBudget(activeBudget);
+        if (cancelled) return;
 
         if (!activeBudget) {
           const latestPreviousBudget = await getLatestFinishedBudget(user.uid);
 
-          setBudget(null);
-          setPreviousBudget(latestPreviousBudget);
+          if (cancelled) return;
+
+          let previousTotalSpent = 0;
 
           if (latestPreviousBudget) {
             const previousExpenses = await getExpenses(
@@ -178,16 +183,18 @@ function Home() {
               latestPreviousBudget.id,
             );
 
-            const previousTotalSpent = previousExpenses.reduce(
+            if (cancelled) return;
+
+            previousTotalSpent = previousExpenses.reduce(
               (total, expense) => total + Number(expense.amount || 0),
               0,
             );
-
-            setPreviousBudgetSpent(previousTotalSpent);
-          } else {
-            setPreviousBudgetSpent(0);
           }
 
+          if (cancelled) return;
+
+          setPreviousBudget(latestPreviousBudget);
+          setPreviousBudgetSpent(previousTotalSpent);
           setExpenses([]);
           setExpensesLoading(false);
 
@@ -202,32 +209,26 @@ function Home() {
           activeBudget.period,
         );
 
+        if (cancelled) return;
+
         setPreviousBudget(completedBudget);
-
-        if (!completedBudget) {
-          setPreviousBudgetSpent(0);
-        }
-
-        if (completedBudget) {
-          const completedBudgetExpenses = await getExpenses(
-            user.uid,
-            completedBudget.id,
-          );
-
-          const completedBudgetTotalSpent = completedBudgetExpenses.reduce(
-            (total, expense) => total + Number(expense.amount || 0),
-            0,
-          );
-
-          setPreviousBudgetSpent(completedBudgetTotalSpent);
-        } else {
-          setPreviousBudgetSpent(0);
-        }
-
         setExpensesLoading(true);
 
-        const budgetExpenses = await getExpenses(user.uid, activeBudget.id);
+        const [budgetExpenses, completedBudgetExpenses] = await Promise.all([
+          getExpenses(user.uid, activeBudget.id),
+          completedBudget
+            ? getExpenses(user.uid, completedBudget.id)
+            : Promise.resolve([]),
+        ]);
 
+        if (cancelled) return;
+
+        const completedBudgetTotalSpent = completedBudgetExpenses.reduce(
+          (total, expense) => total + Number(expense.amount || 0),
+          0,
+        );
+
+        setPreviousBudgetSpent(completedBudgetTotalSpent);
         setExpenses(budgetExpenses);
 
         localStorage.setItem(
@@ -238,13 +239,21 @@ function Home() {
           }),
         );
       } catch (error) {
-        console.error("Unable to load home data:", error);
+        if (!cancelled) {
+          console.error("Unable to load home data:", error);
+        }
       } finally {
-        setExpensesLoading(false);
+        if (!cancelled) {
+          setExpensesLoading(false);
+        }
       }
     }
 
     loadHomeData();
+
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
   useEffect(() => {
@@ -252,51 +261,109 @@ function Home() {
       return undefined;
     }
 
+    let cancelled = false;
+
     const unsubscribe = listenToBudgets(
       user.uid,
-      async () => {
-        try {
-          const activeBudget = await getActiveBudget(user.uid);
+      (updatedBudgets) => {
+        // Update Home immediately using the latest Firestore snapshot.
+        const now = new Date();
 
-          setBudget(activeBudget);
+        const activeBudgets = updatedBudgets.filter((item) => {
+          if (
+            item.status === "held" ||
+            item.status === "completed" ||
+            !item.startDate?.toDate
+          ) {
+            return false;
+          }
 
-          if (!activeBudget) {
-            setExpenses([]);
+          const startDate = item.startDate.toDate();
 
-            const latestPreviousBudget = await getLatestFinishedBudget(
-              user.uid,
-            );
+          if (!item.endDate?.toDate) {
+            return startDate <= now;
+          }
 
-            setPreviousBudget(latestPreviousBudget);
+          return startDate <= now && now < item.endDate.toDate();
+        });
 
-            if (!latestPreviousBudget) {
-              setPreviousBudgetSpent(0);
+        activeBudgets.sort((a, b) => {
+          const aTime =
+            a.createdAt?.toMillis?.() ?? a.startDate?.toMillis?.() ?? 0;
+
+          const bTime =
+            b.createdAt?.toMillis?.() ?? b.startDate?.toMillis?.() ?? 0;
+
+          return bTime - aTime;
+        });
+
+        const activeBudget = activeBudgets[0] || null;
+
+        setBudget(activeBudget);
+
+        if (!activeBudget) {
+          setExpenses([]);
+        }
+
+        // Keep repeating-budget processing running without blocking the UI.
+        getActiveBudget(user.uid).catch((error) => {
+          if (!cancelled) {
+            console.error("Unable to process active budget:", error);
+          }
+        });
+
+        // Refresh previous-budget information separately.
+        async function syncPreviousBudget() {
+          try {
+            if (!activeBudget) {
+              const latestPreviousBudget = await getLatestFinishedBudget(
+                user.uid,
+              );
+
+              if (cancelled) return;
+
+              setPreviousBudget(latestPreviousBudget);
+
+              if (!latestPreviousBudget) {
+                setPreviousBudgetSpent(0);
+              }
+
+              return;
             }
 
-            return;
+            const completedBudget = await getPreviousBudget(
+              user.uid,
+              activeBudget.id,
+              activeBudget.period,
+            );
+
+            if (cancelled) return;
+
+            setPreviousBudget(completedBudget);
+
+            if (!completedBudget) {
+              setPreviousBudgetSpent(0);
+            }
+          } catch (error) {
+            if (!cancelled) {
+              console.error("Unable to sync previous budget:", error);
+            }
           }
-
-          const completedBudget = await getPreviousBudget(
-            user.uid,
-            activeBudget.id,
-            activeBudget.period,
-          );
-
-          setPreviousBudget(completedBudget);
-
-          if (!completedBudget) {
-            setPreviousBudgetSpent(0);
-          }
-        } catch (error) {
-          console.error("Unable to sync home budget:", error);
         }
+
+        syncPreviousBudget();
       },
       (error) => {
-        console.error("Unable to sync home budgets:", error);
+        if (!cancelled) {
+          console.error("Unable to sync home budgets:", error);
+        }
       },
     );
 
-    return unsubscribe;
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
   }, [user]);
 
   useEffect(() => {
@@ -431,19 +498,26 @@ function Home() {
       String(today.getDate()).padStart(2, "0"),
     ].join("-");
 
-    return expenses.filter((expense) => {
-      if (!expense.date) {
-        return false;
-      }
+    return expenses
+      .filter((expense) => {
+        if (!expense.date) {
+          return false;
+        }
 
-      let expenseDate = expense.date;
+        let expenseDate = expense.date;
 
-      if (typeof expense.date !== "string" && expense.date.toDate) {
-        expenseDate = expense.date.toDate().toISOString().slice(0, 10);
-      }
+        if (typeof expense.date !== "string" && expense.date.toDate) {
+          expenseDate = expense.date.toDate().toISOString().slice(0, 10);
+        }
 
-      return expenseDate === todayString;
-    });
+        return expenseDate === todayString;
+      })
+      .sort((a, b) => {
+        const aTime = a.createdAt?.toMillis?.() ?? 0;
+        const bTime = b.createdAt?.toMillis?.() ?? 0;
+
+        return bTime - aTime;
+      });
   }, [expenses]);
 
   const spendingByDay = useMemo(() => {

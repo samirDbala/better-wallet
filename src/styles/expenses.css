@@ -485,6 +485,54 @@
     opacity 0.2s ease;
 }
 
+/* Daily expense summary */
+
+.expense-day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.expense-day-header h2 {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+.expense-day-label {
+  font-size: 9px;
+  line-height: 1.2;
+  color: #777;
+  font-weight: 400;
+}
+
+.expense-day-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.expense-day-summary > span {
+  font-size: 9px;
+  line-height: 1.2;
+  color: #777;
+  font-weight: 400;
+}
+
+.expense-day-total {
+  flex-shrink: 0;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 500;
+  color: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
 .expenses-action-sheet > button:hover {
   background: #e5e5e5;
 }

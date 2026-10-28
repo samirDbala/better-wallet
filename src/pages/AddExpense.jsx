@@ -8,6 +8,28 @@ import { createExpense } from "../firebase/expense";
 
 import "../styles/add-expense.css";
 
+function getSafeDate(value) {
+  try {
+    if (!value) return null;
+
+    let date;
+
+    if (typeof value.toDate === "function") {
+      date = value.toDate();
+    } else if (value instanceof Date) {
+      date = value;
+    } else if (typeof value === "string" || typeof value === "number") {
+      date = new Date(value);
+    } else {
+      return null;
+    }
+
+    return date instanceof Date && !Number.isNaN(date.getTime()) ? date : null;
+  } catch {
+    return null;
+  }
+}
+
 function AddExpense({ onClose, onExpenseAdded }) {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -28,48 +50,71 @@ function AddExpense({ onClose, onExpenseAdded }) {
       return undefined;
     }
 
+    let cancelled = false;
+
     setLoadingBudget(true);
+    setError("");
 
     const unsubscribe = listenToBudgets(
       user.uid,
       (updatedBudgets) => {
-        const now = new Date();
+        if (cancelled) return;
 
-        const activeBudget =
-          updatedBudgets
-            .filter((item) => {
-              if (
-                !item.startDate ||
-                item.status === "held" ||
-                item.status === "completed"
-              ) {
-                return false;
-              }
+        try {
+          const now = new Date();
 
-              const startDate = item.startDate.toDate();
+          const activeBudget =
+            updatedBudgets
+              .filter((item) => {
+                if (
+                  !item.startDate ||
+                  item.status === "held" ||
+                  item.status === "completed"
+                ) {
+                  return false;
+                }
 
-              if (!item.endDate) {
-                return startDate <= now;
-              }
+                const startDate = getSafeDate(item.startDate);
 
-              const endDate = item.endDate.toDate();
+                if (!startDate) {
+                  return false;
+                }
 
-              return startDate <= now && now < endDate;
-            })
-            .sort((a, b) => {
-              const aTime =
-                a.createdAt?.toMillis?.() ?? a.startDate?.toMillis?.() ?? 0;
+                if (!item.endDate) {
+                  return startDate <= now;
+                }
 
-              const bTime =
-                b.createdAt?.toMillis?.() ?? b.startDate?.toMillis?.() ?? 0;
+                const endDate = getSafeDate(item.endDate);
 
-              return bTime - aTime;
-            })[0] || null;
+                if (!endDate) {
+                  return false;
+                }
 
-        setBudget(activeBudget);
-        setLoadingBudget(false);
+                return startDate <= now && now < endDate;
+              })
+              .sort((a, b) => {
+                const aTime =
+                  a.createdAt?.toMillis?.() ?? a.startDate?.toMillis?.() ?? 0;
+
+                const bTime =
+                  b.createdAt?.toMillis?.() ?? b.startDate?.toMillis?.() ?? 0;
+
+                return bTime - aTime;
+              })[0] || null;
+
+          setBudget(activeBudget);
+          setError("");
+        } catch (error) {
+          console.error("Unable to process budgets:", error);
+          setBudget(null);
+          setError("Unable to load your budget.");
+        } finally {
+          setLoadingBudget(false);
+        }
       },
       (error) => {
+        if (cancelled) return;
+
         console.error("Unable to sync budget:", error);
         setBudget(null);
         setLoadingBudget(false);
@@ -77,7 +122,10 @@ function AddExpense({ onClose, onExpenseAdded }) {
       },
     );
 
-    return unsubscribe;
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
   }, [user]);
 
   useEffect(() => {
@@ -100,6 +148,7 @@ function AddExpense({ onClose, onExpenseAdded }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
+    if (saving) return;
     if (!user) {
       setError("Please log in before adding an expense.");
       return;

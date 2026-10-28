@@ -14,6 +14,8 @@ import {
 import { db } from "./config";
 import { updateBudgetNotification } from "./notifications";
 
+const repeatingBudgetTasks = new Map();
+
 function getBudgetDates(period, customStartDate = null, customEndDate = null) {
   const startDate = customStartDate ? new Date(customStartDate) : new Date();
 
@@ -425,94 +427,117 @@ export async function processRepeatingBudgets(userId) {
     return;
   }
 
-  const budgets = await getBudgets(userId);
-  const now = new Date();
+  // Reuse an ongoing processing task for this user.
+  const existingTask = repeatingBudgetTasks.get(userId);
 
-  const expiredBudgets = budgets
-    .filter((budget) => {
-      if (!budget.startDate?.toDate || !budget.endDate?.toDate) {
-        return false;
+  if (existingTask) {
+    return existingTask;
+  }
+
+  const task = (async () => {
+    const budgets = await getBudgets(userId);
+    const now = new Date();
+
+    const expiredBudgets = budgets
+      .filter((budget) => {
+        if (!budget.startDate?.toDate || !budget.endDate?.toDate) {
+          return false;
+        }
+
+        if (budget.status !== "running") {
+          return false;
+        }
+
+        return budget.endDate.toDate() <= now;
+      })
+      .sort((a, b) => {
+        const aEnd = a.endDate.toMillis();
+        const bEnd = b.endDate.toMillis();
+
+        return aEnd - bEnd;
+      });
+
+    for (const budget of expiredBudgets) {
+      const latestBudget = await getBudget(userId, budget.id);
+
+      if (!latestBudget || latestBudget.status !== "running") {
+        continue;
       }
 
-      if (budget.status !== "running") {
-        return false;
-      }
-
-      return budget.endDate.toDate() <= now;
-    })
-    .sort((a, b) => {
-      const aEnd = a.endDate.toMillis();
-      const bEnd = b.endDate.toMillis();
-
-      return aEnd - bEnd;
-    });
-
-  for (const budget of expiredBudgets) {
-    const latestBudget = await getBudget(userId, budget.id);
-
-    if (!latestBudget || latestBudget.status !== "running") {
-      continue;
-    }
-
-    await updateDoc(doc(db, "users", userId, "budgets", budget.id), {
-      status: "completed",
-      completedAt: serverTimestamp(),
-    });
-
-    if (!latestBudget.repeatEnabled) {
-      const activeBudgetControlRef = getActiveBudgetControlRef(userId);
-      const activeBudgetControlSnapshot = await getDoc(activeBudgetControlRef);
-
-      if (
-        activeBudgetControlSnapshot.exists() &&
-        activeBudgetControlSnapshot.data().budgetId === budget.id
-      ) {
-        await deleteDoc(activeBudgetControlRef);
-      }
-
-      continue;
-    }
-
-    let currentBudget = latestBudget;
-
-    while (
-      currentBudget.repeatEnabled &&
-      currentBudget.endDate?.toDate &&
-      currentBudget.endDate.toDate() <= now
-    ) {
-      const nextBudgetId = await createNextRepeatingBudget(
-        userId,
-        currentBudget.id,
-      );
-
-      if (!nextBudgetId) {
-        break;
-      }
-
-      currentBudget = await getBudget(userId, nextBudgetId);
-
-      if (!currentBudget) {
-        break;
-      }
-
-      if (currentBudget.endDate.toDate() > now) {
-        break;
-      }
-
-      await updateDoc(doc(db, "users", userId, "budgets", currentBudget.id), {
+      await updateDoc(doc(db, "users", userId, "budgets", budget.id), {
         status: "completed",
         completedAt: serverTimestamp(),
       });
 
-      const activeBudgetControlRef = getActiveBudgetControlRef(userId);
-      const activeBudgetControlSnapshot = await getDoc(activeBudgetControlRef);
+      if (!latestBudget.repeatEnabled) {
+        const activeBudgetControlRef = getActiveBudgetControlRef(userId);
+        const activeBudgetControlSnapshot = await getDoc(
+          activeBudgetControlRef,
+        );
 
-      if (
-        activeBudgetControlSnapshot.exists() &&
-        activeBudgetControlSnapshot.data().budgetId === currentBudget.id
-      ) {
-        await deleteDoc(activeBudgetControlRef);
+        if (
+          activeBudgetControlSnapshot.exists() &&
+          activeBudgetControlSnapshot.data().budgetId === budget.id
+        ) {
+          await deleteDoc(activeBudgetControlRef);
+        }
+
+        continue;
       }
+
+      let currentBudget = latestBudget;
+
+      while (
+        currentBudget.repeatEnabled &&
+        currentBudget.endDate?.toDate &&
+        currentBudget.endDate.toDate() <= now
+      ) {
+        const nextBudgetId = await createNextRepeatingBudget(
+          userId,
+          currentBudget.id,
+        );
+
+        if (!nextBudgetId) {
+          break;
+        }
+
+        currentBudget = await getBudget(userId, nextBudgetId);
+
+        if (!currentBudget) {
+          break;
+        }
+
+        if (currentBudget.endDate.toDate() > now) {
+          break;
+        }
+
+        await updateDoc(doc(db, "users", userId, "budgets", currentBudget.id), {
+          status: "completed",
+          completedAt: serverTimestamp(),
+        });
+
+        const activeBudgetControlRef = getActiveBudgetControlRef(userId);
+        const activeBudgetControlSnapshot = await getDoc(
+          activeBudgetControlRef,
+        );
+
+        if (
+          activeBudgetControlSnapshot.exists() &&
+          activeBudgetControlSnapshot.data().budgetId === currentBudget.id
+        ) {
+          await deleteDoc(activeBudgetControlRef);
+        }
+      }
+    }
+  })();
+
+  repeatingBudgetTasks.set(userId, task);
+
+  try {
+    await task;
+  } finally {
+    if (repeatingBudgetTasks.get(userId) === task) {
+      repeatingBudgetTasks.delete(userId);
     }
   }
 }
