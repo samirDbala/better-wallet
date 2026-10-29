@@ -12,7 +12,7 @@ export default defineConfig({
         short_name: "Better Wallet",
         description: "Manage your budget and track your expenses.",
         theme_color: "#000000",
-        background_color: "#000000",
+        background_color: "#FFFFFF",
         display: "standalone",
         start_url: "/",
         icons: [
