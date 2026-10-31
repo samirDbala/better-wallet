@@ -63,19 +63,31 @@ function formatDate(value) {
   });
 }
 
-function formatShortDate(value) {
-  const date = getDate(value);
+function formatShortDate(dateValue, createdAtValue) {
+  const date = getDate(dateValue);
+  const time = getDate(createdAtValue);
 
   if (!date) {
     return "-";
   }
 
-  return date.toLocaleDateString("en-IN", {
+  const formattedDate = date.toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "short",
   });
-}
 
+  if (!time) {
+    return formattedDate;
+  }
+
+  const formattedTime = time.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return `${formattedDate}, ${formattedTime}`;
+}
 function getPeriodLabel(period) {
   const labels = {
     daily: "Daily",
@@ -116,6 +128,21 @@ function BudgetDetails() {
 
   const [budget, setBudget] = useState(null);
   const [expenses, setExpenses] = useState([]);
+  const sortedExpenses = useMemo(() => {
+    return [...expenses].sort((a, b) => {
+      const dateA = getDate(a.date)?.getTime() ?? 0;
+      const dateB = getDate(b.date)?.getTime() ?? 0;
+
+      if (dateA !== dateB) {
+        return dateB - dateA;
+      }
+
+      const createdA = getDate(a.createdAt)?.getTime() ?? 0;
+      const createdB = getDate(b.createdAt)?.getTime() ?? 0;
+
+      return createdB - createdA;
+    });
+  }, [expenses]);
   const [loading, setLoading] = useState(true);
   const [showActions, setShowActions] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -412,10 +439,10 @@ function BudgetDetails() {
           <div className="budget-details-section-heading">
             <h2>Expenses</h2>
 
-            <span>{expenses.length}</span>
+            <span>{sortedExpenses.length}</span>
           </div>
 
-          {expenses.length === 0 ? (
+          {sortedExpenses.length === 0 ? (
             <div className="budget-details-no-data">
               <Receipt size={20} strokeWidth={1.5} />
 
@@ -423,7 +450,7 @@ function BudgetDetails() {
             </div>
           ) : (
             <div className="budget-details-expense-list">
-              {expenses.map((expense) => {
+              {sortedExpenses.map((expense) => {
                 const CategoryIcon =
                   categoryIcons[expense.category] || categoryIcons.Other;
 
@@ -438,7 +465,7 @@ function BudgetDetails() {
 
                       <span>
                         {expense.category || "Other"} ·{" "}
-                        {formatShortDate(expense.date)}
+                        {formatShortDate(expense.date, expense.createdAt)}
                       </span>
                     </div>
 
